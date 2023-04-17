@@ -1,10 +1,8 @@
 import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
 import {Subject, takeUntil} from 'rxjs';
 import {IoTDataService} from './services/device.service';
 import {IoTData} from './models/Iot-data.model';
 import {ToastrService} from 'ngx-toastr';
-import {NgxDropzoneChangeEvent} from 'ngx-dropzone';
 
 @Component({
     selector: 'home',
@@ -12,12 +10,10 @@ import {NgxDropzoneChangeEvent} from 'ngx-dropzone';
     encapsulation: ViewEncapsulation.None
 })
 export class HomeComponent implements OnInit, OnDestroy {
-    public form: FormGroup;
     public files: File[] = [];
     private unsubscribe$ = new Subject<void>();
 
-    constructor(private _formBuilder: FormBuilder,
-                private _iotDataService: IoTDataService,
+    constructor(private _iotDataService: IoTDataService,
                 private _toastrService: ToastrService) {
     }
 
