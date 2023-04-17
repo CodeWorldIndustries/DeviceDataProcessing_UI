@@ -8,6 +8,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {FuseAlertModule} from '../../../@fuse/components/alert';
 import {MatSelectModule} from '@angular/material/select';
+import {NgxDropzoneModule} from 'ngx-dropzone';
 
 const routes: Route[] = [
     {
@@ -28,7 +29,8 @@ const routes: Route[] = [
         MatButtonModule,
         MatSlideToggleModule,
         FuseAlertModule,
-        MatSelectModule
+        MatSelectModule,
+        NgxDropzoneModule
     ]
 })
 export class HomeModule {

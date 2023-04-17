@@ -1,12 +1,9 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {Subject, takeUntil} from 'rxjs';
-import {IridiumDeviceService} from './services/iridium-device.service';
-import * as _ from 'lodash';
 import {ToastrService} from 'ngx-toastr';
-import {DeviceActivationResult, UpdateDeviceStatusResponse} from './models/iridium-device.models';
-import {IridiumServicePlansService} from './services/iridium-service-plans.service';
-import {BundleInfo} from './models/iridium-service-plans.models';
+import {IoTDataService} from './services/device.service';
+import {IoTData} from './models/Iot-data.model';
 
 @Component({
     selector: 'home',
@@ -14,14 +11,12 @@ import {BundleInfo} from './models/iridium-service-plans.models';
     encapsulation: ViewEncapsulation.None
 })
 export class HomeComponent implements OnInit, OnDestroy {
-    @ViewChild('deviceInput') deviceInput: ElementRef;
     public form: FormGroup;
-    public deviceActivationResults: DeviceActivationResult[] = [];
+    public files: File[] = [];
     private unsubscribe$ = new Subject<void>();
 
     constructor(private _formBuilder: FormBuilder,
-                private _iridiumDeviceService: IridiumDeviceService,
-                private _iridiumServicePlansService: IridiumServicePlansService,
+                private _iotDataService: IoTDataService,
                 private _toastrService: ToastrService) {
     }
 
@@ -29,84 +24,46 @@ export class HomeComponent implements OnInit, OnDestroy {
     // ngOnInit
     // -----------------------------------------------------------------------------------------------------
     ngOnInit(): void {
-        // subscribe to device updates
-        this._iridiumDeviceService.updateDeviceStatusResponse$.pipe(takeUntil(this.unsubscribe$)).subscribe((response: UpdateDeviceStatusResponse) => {
+        // subscribe to iot Data updates
+        this._iotDataService.iotData$.pipe(takeUntil(this.unsubscribe$)).subscribe((response: IoTData[]) => {
             if(response) {
-                this.deviceActivationResults.unshift(response?.results[0]);
+                this._toastrService.success('Files successfully merged')
+                this._iotDataService.downloadJSON(response)
             }
         });
-        this.createForm();
     }
 
     // -----------------------------------------------------------------------------------------------------
-    // Creates the form
+    // onSelect
     // -----------------------------------------------------------------------------------------------------
-    createForm(): void {
-        // Create form
-        this.form = this._formBuilder.group({
-            activate: true,
-            imei: [null]
-        });
-        // Focus on form
-        setTimeout(() => {
-            this.deviceInput.nativeElement.focus();
-        }, 100);
+    onSelect(event) {
+        console.log(event);
+        this.files.push(...event.addedFiles);
     }
 
     // -----------------------------------------------------------------------------------------------------
-    // Removes the error from the DeviceUpdateStatusResponse failed array
+    // onRemove
     // -----------------------------------------------------------------------------------------------------
-    removeError(index: number): void {
-        this.deviceActivationResults.splice(index, 1);
+    onRemove(event) {
+        console.log(event);
+        this.files.splice(this.files.indexOf(event), 1);
     }
 
     // -----------------------------------------------------------------------------------------------------
-    // onFormSubmit
+    // submit the files to be merged
     // -----------------------------------------------------------------------------------------------------
-    onSubmit() {
-        if (!this.form.controls.imei.value) {
-            this.deviceActivationResults.unshift({
-                imei: 'NULL',
-                message: 'You must provide an IMEI',
-                isSuccessful: false,
-                status: null
-            });
-            this.deviceInput.nativeElement.focus();
-            return;
+    submit(): void {
+        const formData = new FormData();
+        for (let i = 0; i < this.files.length; i++) {
+            formData.append('files', this.files[i], this.files[i].name);
         }
-        Object.keys(this.form.controls).forEach((key) => {
-            this.form.controls[key].markAsTouched();
-        });
-        if (this.form.valid) {
-            // When device is being activated
-            if (this.form.controls.activate.value === true) {
-                this._iridiumDeviceService.activateDevice([this.form.controls.imei.value]).subscribe();
-            }
-            // When device is being deactivated
-            if (this.form.controls.activate.value === false) {
-                this._iridiumDeviceService.updateIridiumDeviceStatus({
-                    status: this.form.controls.activate.value === true ? 'ACTIVATE' : 'DEACTIVATE',
-                    imeis: [this.form.controls.imei.value]
-                }).subscribe();
-            }
-            // Reset the form
-            this.form.controls.imei.setValue(null);
-            this.deviceInput.nativeElement.focus();
-        }
-    }
-
-    // -----------------------------------------------------------------------------------------------------
-    // Clears all the messages
-    // -----------------------------------------------------------------------------------------------------
-    clearAllMessages(): void {
-        this.deviceActivationResults = [];
+        this._iotDataService.mergeIoTData(formData).subscribe();
     }
 
     // -----------------------------------------------------------------------------------------------------
     // ngOnDestroy
     // -----------------------------------------------------------------------------------------------------
     ngOnDestroy(): void {
-        this._iridiumDeviceService.updateDeviceStatusResponse = null;
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
     }

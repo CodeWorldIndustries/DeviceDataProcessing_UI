@@ -17,6 +17,7 @@ import {HTTP_INTERCEPTORS} from '@angular/common/http';
 import {JwtInterceptor} from './core/interceptors/jwt.interceptor';
 import {AuthInterceptor} from './core/interceptors/auth.interceptor';
 import { LocationStrategy, PathLocationStrategy } from '@angular/common';
+import {NgxDropzoneModule} from 'ngx-dropzone';
 
 const routerConfig: ExtraOptions = {
     preloadingStrategy: PreloadAllModules,
@@ -44,6 +45,7 @@ const routerConfig: ExtraOptions = {
         LayoutModule,
 
         // 3rd party
+        NgxDropzoneModule,
         ToastrModule.forRoot(),
         CookieModule.withOptions()
     ],

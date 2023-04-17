@@ -3,8 +3,8 @@ import {FuseNavigationItem} from '@fuse/components/navigation';
 
 const nav: FuseNavigationItem[] = [
     {
-        id: 'Data',
-        title: 'Data Merge',
+        id: 'home',
+        title: 'Home',
         type: 'basic',
         icon: 'mat_outline:home',
         link: '/home'

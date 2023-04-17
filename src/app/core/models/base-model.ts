@@ -1,5 +1,5 @@
 export class Base {
-    id: string;
+    id: number;
     createdDate: string;
     deletedDate: string | null;
 }
