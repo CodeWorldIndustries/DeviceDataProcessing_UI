@@ -19,7 +19,7 @@
             <div class="flex flex-col w-full max-w-4xl">
                 <ngx-dropzone [multiple]="true" [accept]="'application/json'" (change)="onFileAdded($event)">
                     <ngx-dropzone-label>
-                        <div class="flex flex-col w-full max-w-4xl">
+                        <div class="flex flex-col w-full max-w-4xl p-2">
                             <p>Merge multiple JSON files containing IoT data by dropping them here</p>
                             <div><mat-icon class="icon-display">cloud_upload</mat-icon></div>
                             <p class="text-sm">or click here to open your file explorer</p>
@@ -34,7 +34,10 @@
             <!-- Action -->
             <!--------------------------------------------------------------------------------------------->
             <div class="flex flex-row w-full items-end justify-end max-w-4xl mt-4">
-                <button *ngIf="files.length > 0" id="submit-btn" color="primary" (click)="submit()" class="ml-4" mat-flat-button type="button">
+                <button *ngIf="files.length > 0" id="clear-btn" color="accent" (click)="clear()" class="ml-4" mat-flat-button type="button" [disabled]="isMerging">
+                    <span class="uppercase">Clear</span>
+                </button>
+                <button *ngIf="files.length > 0" id="submit-btn" color="primary" (click)="submit()" class="ml-4" mat-flat-button type="button" [disabled]="isMerging">
                     <span class="uppercase">Merge</span>
                 </button>
             </div>

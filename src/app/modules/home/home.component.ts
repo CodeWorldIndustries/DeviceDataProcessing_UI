@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
-import {Subject, takeUntil} from 'rxjs';
+import {catchError, Subject, takeUntil, throwError} from 'rxjs';
 import {IoTDataService} from './services/device.service';
 import {IoTData} from './models/Iot-data.model';
 import {ToastrService} from 'ngx-toastr';
@@ -12,6 +12,7 @@ import {ToastrService} from 'ngx-toastr';
 })
 export class HomeComponent implements OnInit, OnDestroy {
     public files: File[] = [];
+    public isMerging: boolean = false;
     private unsubscribe$ = new Subject<void>();
 
     constructor(private _iotDataService: IoTDataService,
@@ -57,11 +58,24 @@ export class HomeComponent implements OnInit, OnDestroy {
     // submit the files to be merged
     // -----------------------------------------------------------------------------------------------------
     submit(): void {
+        this.isMerging = true;
         const formData = new FormData();
         for (let i = 0; i < this.files.length; i++) {
             formData.append('files', this.files[i], this.files[i].name);
         }
-        this._iotDataService.mergeIoTData(formData).subscribe();
+        this._iotDataService.mergeIoTData(formData).pipe(catchError(err => {
+            this.isMerging = false;
+            return throwError(err);
+        })).subscribe(() =>{
+            this.isMerging = false;
+        });
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // clears the files to be merged
+    // -----------------------------------------------------------------------------------------------------
+    clear(): void {
+        this.files = [];
     }
 
     // -----------------------------------------------------------------------------------------------------
