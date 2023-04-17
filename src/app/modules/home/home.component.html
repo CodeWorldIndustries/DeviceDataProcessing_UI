@@ -18,7 +18,12 @@
         <div class="flex flex-col flex-auto items-center p-6 sm:p-10">
             <div class="flex flex-col w-full max-w-4xl">
                 <ngx-dropzone [multiple]="true" [accept]="'application/json'" (change)="onFileAdded($event)">
-                    <ngx-dropzone-label>Drop JSON files containing data reported by IoT devices to merge them
+                    <ngx-dropzone-label>
+                        <div class="flex flex-col w-full max-w-4xl">
+                            <p>Merge multiple JSON files containing IoT data by dropping them here</p>
+                            <div><mat-icon class="icon-display">cloud_upload</mat-icon></div>
+                            <p class="text-sm">or click here to open your file explorer</p>
+                        </div>
                     </ngx-dropzone-label>
                     <ngx-dropzone-preview *ngFor="let f of files" [removable]="true" (removed)="onRemove(f)">
                         <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
