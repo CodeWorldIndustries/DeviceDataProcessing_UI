@@ -1,9 +1,10 @@
 import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Subject, takeUntil} from 'rxjs';
-import {ToastrService} from 'ngx-toastr';
 import {IoTDataService} from './services/device.service';
 import {IoTData} from './models/Iot-data.model';
+import {ToastrService} from 'ngx-toastr';
+import {NgxDropzoneChangeEvent} from 'ngx-dropzone';
 
 @Component({
     selector: 'home',
@@ -27,7 +28,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         // subscribe to iot Data updates
         this._iotDataService.iotData$.pipe(takeUntil(this.unsubscribe$)).subscribe((response: IoTData[]) => {
             if(response) {
-                this._toastrService.success('Files successfully merged')
                 this._iotDataService.downloadJSON(response)
             }
         });
@@ -36,8 +36,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
     // onSelect
     // -----------------------------------------------------------------------------------------------------
-    onSelect(event) {
-        console.log(event);
+    onFileAdded(event) {
+        if (event.rejectedFiles.length > 0) {
+            this._toastrService.error('You can only add JSON files.')
+            return;
+        }
         this.files.push(...event.addedFiles);
     }
 
