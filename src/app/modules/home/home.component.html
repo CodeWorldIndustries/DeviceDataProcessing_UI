@@ -1,0 +1,86 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!--------------------------------------------------------------------------------------------->
+    <!-- Main -->
+    <!--------------------------------------------------------------------------------------------->
+    <div class="flex-auto p-6 sm:p-10">
+
+        <!--------------------------------------------------------------------------------------------->
+        <!-- Page Image -->
+        <!--------------------------------------------------------------------------------------------->
+        <div class="w-full flex justify-center">
+            <img class="w-50" src="assets/images/logo/iot-logo.png">
+        </div>
+
+        <!--------------------------------------------------------------------------------------------->
+        <!-- Page description -->
+        <!--------------------------------------------------------------------------------------------->
+        <div class="w-full flex justify-center">
+            <div class="flex flex-col w-full max-w-4xl">
+                <div class="w-full flex justify-center">
+                    <p>Enter the satellite device's IMEI number to activate or deactivate it.</p>
+                </div>
+            </div>
+        </div>
+
+        <!--------------------------------------------------------------------------------------------->
+        <!-- Form Container-->
+        <!--------------------------------------------------------------------------------------------->
+        <div class="flex flex-col flex-auto items-center p-6 sm:p-10">
+            <div class="flex flex-col w-full max-w-4xl">
+
+                <!--------------------------------------------------------------------------------------------->
+                <!-- Form -->
+                <!--------------------------------------------------------------------------------------------->
+                <form [formGroup]="form" id="interval-form" class="flex flex-col gt-sm:flex-row"
+                      (keydown.enter)="onSubmit()">
+
+                    <!---------------------------------------------------------------------------------------->
+                    <!-- IMEI Form -->
+                    <!---------------------------------------------------------------------------------------->
+                    <mat-form-field class="flex-auto">
+                        <input id="imei-input" matInput formControlName="imei" [maxlength]="25"
+                               #deviceInput placeholder="IMEI">
+                        <mat-icon class="icon-size-5" matSuffix [svgIcon]="'mat_solid:memory'"></mat-icon>
+                        <mat-error>You must provide a value</mat-error>
+                    </mat-form-field>
+
+                    <!---------------------------------------------------------------------------------------->
+                    <!-- Toggle and submit button -->
+                    <!---------------------------------------------------------------------------------------->
+                    <div class="flex flex-row w-full items-center justify-between max-w-4xl">
+                        <mat-slide-toggle id="activation-toggle"
+                            formControlName="activate">{{form.controls.activate.value === true ? 'Activate' : 'Deactivate'}}
+                            Device
+                        </mat-slide-toggle>
+                        <button id="submit-btn" (click)="onSubmit()" class="ml-4" mat-flat-button
+                                color="{{form.controls.activate.value === true ? 'primary' : 'warn'}}" type="button">
+                            <span
+                                class="uppercase">{{form.controls.activate.value === true ? 'Activate' : 'Deactivate'}}</span>
+                        </button>
+                    </div>
+                </form>
+
+                <!--------------------------------------------------------------------------------------------->
+                <!-- Errors -->
+                <!--------------------------------------------------------------------------------------------->
+                <div class="w-full pt-4"
+                     *ngIf="deviceActivationResults && deviceActivationResults.length > 0">
+                    <div class="flex flex-col">
+                        <button (click)="clearAllMessages()" id="clear-all-btn" mat-stroked-button class="mb-4">Clear All</button>
+                        <fuse-alert
+                            *ngFor="let response of deviceActivationResults; let i = index; let first = first"
+                            class="{{first ? '':'mt-2'}}"
+                            [appearance]="'outline'"
+                            [showIcon]="false"
+                            type="{{response?.isSuccessful === true ? 'success':'error'}}"
+                            [dismissible]="true"
+                            (dismissedChanged)="removeError(i)">
+                            <div>{{response?.imei}} - {{response?.message}}</div>
+                        </fuse-alert>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,32 @@
+trigger:
+- master
+
+name: '$(build.BuildId)'
+jobs:
+
+# Build the solution
+- job: DeviceMisUi
+  displayName: 'Build Device App UI'
+
+  pool:
+    vmImage: windows-latest
+
+  steps:
+
+  # Copy ARM Templates
+  - task: CopyFiles@2
+    displayName: 'Copy ARM Templates'
+    inputs:
+      SourceFolder: armTemplates
+      TargetFolder: '$(build.artifactstagingdirectory)/ARMTemplates'
+
+  # Copy Source Code
+  - task: CopyFiles@2
+    displayName: 'Copy Source Code'
+    inputs:
+      SourceFolder: sourceCode
+      TargetFolder: '$(build.artifactstagingdirectory)/src'
+
+  # Publish artifacts
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: drop'
