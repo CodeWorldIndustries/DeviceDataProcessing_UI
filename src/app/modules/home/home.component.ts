@@ -38,7 +38,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
     onFileAdded(event) {
         if (event.rejectedFiles.length > 0) {
-            this._toastrService.error('You can only add JSON files.')
+            this._toastrService.error('You can only add JSON files.');
+            return;
+        }
+        if (this.files.some(f => f.name === event.addedFiles[0].name)) {
+            this._toastrService.error(`The JSON file ${event.addedFiles[0].name} already exists.`);
             return;
         }
         this.files.push(...event.addedFiles);
