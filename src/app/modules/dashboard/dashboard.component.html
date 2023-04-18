@@ -1,0 +1,96 @@
+<div class="flex flex-col flex-auto w-full">
+    <div class="flex flex-wrap w-full max-w-screen-xl mx-auto p-6 md:p-8">
+
+        <!----------------------------------------------------------------------------------------->
+        <!-- Title and action buttons -->
+        <!----------------------------------------------------------------------------------------->
+        <div class="flex items-center justify-between w-full">
+            <div>
+                <div class="text-3xl font-semibold tracking-tight leading-8">Device dashboard</div>
+                <div class="font-medium tracking-tight text-secondary">Monitor humidity and temperature</div>
+            </div>
+        </div>
+
+        <!----------------------------------------------------------------------------------------->
+        <!-- data usage overview & devices -->
+        <!----------------------------------------------------------------------------------------->
+        <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-8 w-full mt-8">
+            <div
+                class="sm:col-span-1 lg:col-span-3 dark flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
+                <div class="flex items-center justify-between mt-10 ml-10 mr-6 sm:mr-10">
+
+                    <!----------------------------------------------------------------------------------------->
+                    <!-- data usage title -->
+                    <!----------------------------------------------------------------------------------------->
+                    <div class="flex flex-col">
+                        <div class="mr-4 text-2xl md:text-3xl font-semibold tracking-tight leading-7">Data By Date
+                        </div>
+                        <div class="font-medium text-secondary">Number of bytes uploaded</div>
+                    </div>
+
+                    <!----------------------------------------------------------------------------------------->
+                    <!-- data usage date selection -->
+                    <!----------------------------------------------------------------------------------------->
+                    <div class="ml-2">
+
+                        <!----------------------------------------------------------------------------------------->
+                        <!-- data usage date selection toggle group -->
+                        <!----------------------------------------------------------------------------------------->
+                        <mat-button-toggle-group
+                            class="hidden sm:inline-flex border-none space-x-1"
+                            value="this-year"
+                            #visitorsYearSelector="matButtonToggleGroup">
+                            <mat-button-toggle (click)="getData()"
+                                               class="px-1.5 rounded-full overflow-hidden border-none font-medium"
+                                               value="last-year">This Year
+                            </mat-button-toggle>
+                            <mat-button-toggle (click)="getData(-30)"
+                                               class="px-1.5 rounded-full overflow-hidden border-none font-medium"
+                                               value="last-year">Last 30 days
+                            </mat-button-toggle>
+                            <mat-button-toggle (click)="getData(-7)"
+                                               class="px-1.5 rounded-full overflow-hidden border-none font-medium"
+                                               value="this-year">Last 7 days
+                            </mat-button-toggle>
+                        </mat-button-toggle-group>
+
+                        <!----------------------------------------------------------------------------------------->
+                        <!-- data usage date selection toggle group - when on small device -->
+                        <!----------------------------------------------------------------------------------------->
+                        <div class="sm:hidden">
+                            <button
+                                mat-icon-button
+                                [matMenuTriggerFor]="dataMenu">
+                                <mat-icon [svgIcon]="'heroicons_outline:dots-vertical'"></mat-icon>
+                            </button>
+                            <mat-menu #dataMenu="matMenu">
+                                <button mat-menu-item (click)="getData()">This Year</button>
+                                <button mat-menu-item (click)="getData(-30)">Last 30 days</button>
+                                <button mat-menu-item (click)="getData(-7)">Last 7 days</button>
+                            </mat-menu>
+                        </div>
+                    </div>
+                </div>
+
+                <!----------------------------------------------------------------------------------------->
+                <!-- data usage chart -->
+                <!----------------------------------------------------------------------------------------->
+                <div class="flex flex-col flex-auto h-80">
+                    <apx-chart
+                        class="flex-auto w-full h-full"
+                        [chart]="dataChartOptions.chart"
+                        [colors]="dataChartOptions.colors"
+                        [dataLabels]="dataChartOptions.dataLabels"
+                        [fill]="dataChartOptions.fill"
+                        [grid]="dataChartOptions.grid"
+                        [series]="dataChartOptions.series"
+                        [stroke]="dataChartOptions.stroke"
+                        [tooltip]="dataChartOptions.tooltip"
+                        [xaxis]="dataChartOptions.xaxis"
+                        [yaxis]="dataChartOptions.yaxis">
+                    </apx-chart>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

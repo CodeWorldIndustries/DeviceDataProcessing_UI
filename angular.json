@@ -41,8 +41,7 @@
                                 "input": "src",
                                 "output": "/"
                             },
-                            "src/web.config",
-                            "src/manifest.json"
+                            "src/web.config"
                         ],
                         "stylePreprocessorOptions": {
                             "includePaths": [

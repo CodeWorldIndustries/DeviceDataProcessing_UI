@@ -8,6 +8,13 @@ const nav: FuseNavigationItem[] = [
         type: 'basic',
         icon: 'mat_outline:home',
         link: '/home'
+    },
+    {
+        id: 'dashboard',
+        title: 'Dashboard',
+        type: 'basic',
+        icon: 'mat_outline:dashboard',
+        link: '/dashboard'
     }
 ]
 

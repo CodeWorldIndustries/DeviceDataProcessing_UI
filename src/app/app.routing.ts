@@ -21,6 +21,19 @@ export const appRoutes: Route[] = [
             {path: 'home', loadChildren: () => import('app/modules/home/home.module').then(m => m.HomeModule)},
         ]
     },
+    {
+        path: '',
+        component: LayoutComponent,
+        resolve: {
+            initialData: InitialDataResolver
+        },
+        children: [
+            {
+                path: 'dashboard',
+               loadChildren: () => import('app/modules/dashboard/dashboard.module').then(m => m.DashboardModule)
+            },
+        ]
+    },
     // Catch all
     {path: '**', redirectTo: 'home'}
 ];
