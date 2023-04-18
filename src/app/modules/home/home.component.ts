@@ -82,7 +82,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     // ngOnDestroy
     // -----------------------------------------------------------------------------------------------------
     ngOnDestroy(): void {
-        this._iotDataService.iotData = [];
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
     }
