@@ -29,7 +29,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     public currentDateTime: DateTime = DateTime.now();
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-    constructor(private _analyticsService: DashboardService,
+    constructor(private _dashboardService: DashboardService,
                 private _changeDetectorRef: ChangeDetectorRef,
                 private _confirmationService: FuseConfirmationService,
                 private _router: Router) {
@@ -39,7 +39,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // ngOnInit
     // -----------------------------------------------------------------------------------------------------
     ngOnInit(): void {
-        this._analyticsService.data$.pipe(takeUntil(this._unsubscribeAll)).subscribe((data: IoTData[]) => {
+        this._dashboardService.data$.pipe(takeUntil(this._unsubscribeAll)).subscribe((data: IoTData[]) => {
             this.data = data;
             this._prepareDeviceUsageChartData();
             this._changeDetectorRef.markForCheck();
@@ -141,11 +141,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
             series: [
                 {
                     name: 'Temperature',
-                    data: this._analyticsService.convertTemperatureToDataPoints(this.data)
+                    data: this._dashboardService.convertTemperatureToDataPoints(this.data)
                 },
                 {
                     name: 'Humidity',
-                    data: this._analyticsService.convertHumidityToDataPoints(this.data)
+                    data: this._dashboardService.convertHumidityToDataPoints(this.data)
                 }],
             stroke: {
                 width: 2
@@ -208,7 +208,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     getData(days: number = null): void {
         const now = DateTime.now();
         const daysAgo = days !== null ? now.plus(Duration.fromObject({days: days})) : now.startOf('year');
-        this._analyticsService.getData({
+        this._dashboardService.getData({
             from: daysAgo.toUTC().toISO(),
             to: now.toUTC().toISO()
         }).subscribe();

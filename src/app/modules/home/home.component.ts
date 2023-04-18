@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         // subscribe to iot Data updates
         this._iotDataService.iotData$.pipe(takeUntil(this.unsubscribe$)).subscribe((response: IoTData[]) => {
-            if(response) {
+            if(response.length > 0) {
                 this._iotDataService.downloadJSON(response)
             }
         });
@@ -82,6 +82,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     // ngOnDestroy
     // -----------------------------------------------------------------------------------------------------
     ngOnDestroy(): void {
+        this._iotDataService.iotData = [];
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
     }
